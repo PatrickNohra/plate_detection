@@ -5,7 +5,7 @@ import pandas as pd
 
 # my local camera gives me 28-30 fps, if i want to compute the OCR every 3 seconds ==> set target to 90
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('2.mp4')
 
 target = 150
 frame_counter = 0
@@ -30,7 +30,7 @@ df.to_csv('plates.csv', index=True)
 # appending new data to the csv file
 df.to_csv('plates.csv', mode='a')
 
-start_time = 0
+start_time = time.time()
 end_time = 0
 while True:
     # Capture frame-by-frame
@@ -41,6 +41,8 @@ while True:
     # if video finished or no Video Input
     if not ret:
         break
+    frame = cv2.resize(frame, (520,720))
+    frame = cv2.rotate(frame, cv2.ROTATE_180)
 
     # Our operations on the frame come here
     if frame_counter == target:
@@ -54,7 +56,7 @@ while True:
 
     # if no plate found after 10 seconds, store the temp variable in a dataframe with the correct time
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):  # press 'q' on the keyboard to exit
+    if cv2.waitKey() & 0xFF == ord('q'):  # press 'q' on the keyboard to exit
         break
 
     cv2.imshow('Frame', frame)
